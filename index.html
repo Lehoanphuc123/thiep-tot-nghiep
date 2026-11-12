@@ -133,18 +133,32 @@
 
     var musicStarted = false;
 
-  function startBackgroundMusic() {
-    if (musicStarted === true) {
-        return;
+  
+function startBackgroundMusic() {
+
+  if (musicStarted === true) {
+    return;
+  }
+
+  musicStarted = true;
+
+  try {
+    if (backgroundMusic.readyState >= 1) {
+      backgroundMusic.currentTime = 12;
+    } else {
+      backgroundMusic.addEventListener('loadedmetadata', function () {
+        backgroundMusic.currentTime = 12;
+      }, { once: true });
     }
 
-    musicStarted = true;
-
-    backgroundMusic.currentTime = 12;
-
     backgroundMusic.play().catch(function () {
-        musicStarted = false;
+      musicStarted = false;
     });
+
+  } catch (error) {
+    musicStarted = false;
+  }
+
 }
 
     function playOpenSound() {
@@ -474,15 +488,21 @@
       startBackgroundMusic();
     });
 
-    envelopeSlider.addEventListener('input', function () {
-      startBackgroundMusic();
+    
+envelopeSlider.addEventListener('input', function () {
 
-      var value = Number(envelopeSlider.value);
-      zipPull.style.left = value + '%';
-      zipProgress.style.width = value + '%';
+  var value = Number(envelopeSlider.value);
 
-      if (value >= 95) openEnvelope();
-    });
+  zipPull.style.left = value + '%';
+  zipProgress.style.width = value + '%';
+
+  if (value >= 95) {
+    openEnvelope();
+  }
+
+  startBackgroundMusic();
+
+});
 
     envelopeSlider.addEventListener('change', function () {
       if (!envelopeOpened) {
