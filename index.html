@@ -33,6 +33,53 @@
       -webkit-appearance: none;
       appearance: none;
     }
+
+    .lock-open-button {
+      position: absolute;
+      left: 50%;
+      top: 59%;
+      transform: translate(-50%, -50%);
+      z-index: 40;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      min-width: 112px;
+      min-height: 76px;
+      padding: 9px 14px;
+      border: 1px solid rgba(255,255,255,.85);
+      border-radius: 16px;
+      background: rgba(255,248,250,.94);
+      color: #9b536d;
+      box-shadow: 0 5px 18px rgba(111,54,76,.18);
+      font: inherit;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+    .lock-open-button:active {
+      transform: translate(-50%, -50%) scale(.94);
+    }
+    .lock-icon {
+      display: block;
+      font-size: 30px;
+      line-height: 1;
+      transition: transform .35s ease;
+    }
+    .lock-text {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      white-space: nowrap;
+    }
+    .lock-open-button.unlocked .lock-icon {
+      transform: rotate(-18deg) scale(1.15);
+    }
+    .lock-open-button:disabled {
+      cursor: default;
+      opacity: .85;
+    }
   </style>
 </head>
 
@@ -71,25 +118,12 @@
           <span>HT</span>
         </div>
 
-        <div class="zip-line" id="zipLine">
-          <div class="zip-track"></div>
-          <div class="zip-progress" id="zipProgress"></div>
-          <div class="zip-pull" id="zipPull">
-            <span>❯</span>
-          </div>
-        </div>
+        <button class="lock-open-button" id="lockOpenButton" type="button" aria-label="Chạm để mở thiệp">
+          <span class="lock-icon" aria-hidden="true">🔒</span>
+          <span class="lock-text">CHẠM ĐỂ MỞ THIỆP</span>
+        </button>
 
-        <div class="zip-label">SLIDE TO OPEN</div>
 
-      <input
-        type="range"
-        id="envelopeSlider"
-        class="envelope-slider"
-        min="0"
-        max="100"
-        value="0"
-        aria-label="Kéo để mở phong bì"
-      >
       </div>
 
       <div class="open-instruction">
@@ -139,9 +173,7 @@
     var next = document.getElementById('next');
     var navigation = document.getElementById('navigation');
     var envelopeScreen = document.getElementById('envelopeScreen');
-    var envelopeSlider = document.getElementById('envelopeSlider');
-    var zipPull = document.getElementById('zipPull');
-    var zipProgress = document.getElementById('zipProgress');
+    var lockOpenButton = document.getElementById('lockOpenButton');
     var confettiContainer = document.getElementById('confettiContainer');
 
     var cur = 0;
@@ -502,11 +534,6 @@
       envelopeOpened = true;
       playOpenSound();
 
-      envelopeSlider.value = 100;
-      envelopeSlider.disabled = true;
-      zipPull.style.left = '100%';
-      zipProgress.style.width = '100%';
-
       envelopeScreen.classList.add('opening');
       createConfetti();
 
@@ -521,33 +548,13 @@
       }, 2450);
     }
 
-    // Phát nhạc trong thao tác chạm/kéo hợp lệ của người dùng.
-    envelopeSlider.addEventListener('touchstart', function () {
+    // Chạm vào ổ khóa để mở thiệp. Đây cũng là thao tác kích hoạt nhạc.
+    lockOpenButton.addEventListener('click', function () {
+      if (envelopeOpened) return;
       startBackgroundMusic();
-    }, { passive: true });
-
-    envelopeSlider.addEventListener('pointerdown', function () {
-      startBackgroundMusic();
-    });
-
-    // Thanh kéo cập nhật độc lập, không chờ nhạc tải hoặc phát.
-    envelopeSlider.addEventListener('input', function () {
-      var value = Number(envelopeSlider.value);
-
-      zipPull.style.left = value + '%';
-      zipProgress.style.width = value + '%';
-
-      if (value >= 95) {
-        openEnvelope();
-      }
-    });
-
-    envelopeSlider.addEventListener('change', function () {
-      if (!envelopeOpened) {
-        envelopeSlider.value = 0;
-        zipPull.style.left = '0%';
-        zipProgress.style.width = '0%';
-      }
+      lockOpenButton.classList.add('unlocked');
+      lockOpenButton.disabled = true;
+      openEnvelope();
     });
 
     /* KHỞI TẠO */
