@@ -142,22 +142,12 @@ function startBackgroundMusic() {
 
   musicStarted = true;
 
-  try {
-    if (backgroundMusic.readyState >= 1) {
-      backgroundMusic.currentTime = 12;
-    } else {
-      backgroundMusic.addEventListener('loadedmetadata', function () {
-        backgroundMusic.currentTime = 12;
-      }, { once: true });
-    }
+  backgroundMusic.currentTime = 0;
 
-    backgroundMusic.play().catch(function () {
-      musicStarted = false;
-    });
-
-  } catch (error) {
+  backgroundMusic.play().catch(function (error) {
     musicStarted = false;
-  }
+    console.log('Không thể phát nhạc:', error);
+  });
 
 }
 
