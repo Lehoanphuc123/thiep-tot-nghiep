@@ -11,6 +11,29 @@
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
    <noscript><link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"></noscript>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* Vùng kéo được neo trực tiếp vào phong bì, không neo vào toàn màn hình */
+    .envelope-wrap {
+      position: relative;
+    }
+
+    .envelope-wrap .envelope-slider {
+      position: absolute;
+      left: 17.5%;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 65%;
+      height: 64px;
+      margin: 0;
+      padding: 0;
+      z-index: 30;
+      opacity: 0;
+      cursor: grab;
+      touch-action: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+  </style>
 </head>
 
 <body>
@@ -57,6 +80,16 @@
         </div>
 
         <div class="zip-label">SLIDE TO OPEN</div>
+
+      <input
+        type="range"
+        id="envelopeSlider"
+        class="envelope-slider"
+        min="0"
+        max="100"
+        value="0"
+        aria-label="Kéo để mở phong bì"
+      >
       </div>
 
       <div class="open-instruction">
@@ -73,15 +106,7 @@
         MADE WITH LOVE · HỒNG THU
       </div>
 
-      <input
-        type="range"
-        id="envelopeSlider"
-        class="envelope-slider"
-        min="0"
-        max="100"
-        value="0"
-        aria-label="Kéo để mở phong bì"
-      >
+
 
       <div class="confetti-container" id="confettiContainer"></div>
     </div>
