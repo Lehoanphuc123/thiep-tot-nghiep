@@ -155,6 +155,8 @@
     backgroundMusic.loop = true;
     backgroundMusic.volume = 0.30;
     backgroundMusic.preload = 'auto';
+    backgroundMusic.autoplay = true;
+    backgroundMusic.setAttribute('autoplay', '');
     backgroundMusic.setAttribute('playsinline', '');
     openSound.volume = 0.75;
     clickSound.volume = 0.35;
@@ -191,6 +193,10 @@
         console.log('Lỗi phát nhạc:', error);
       }
     }
+
+    // Thử tự phát nhạc ngay khi giao diện vừa tải.
+    // Nếu trình duyệt chặn autoplay có tiếng, các thao tác chạm/kéo sẽ thử phát lại.
+    startBackgroundMusic();
 
     function playOpenSound() {
       openSound.currentTime = 0;
