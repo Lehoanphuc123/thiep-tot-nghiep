@@ -8,7 +8,8 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+   <noscript><link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"></noscript>
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -128,28 +129,43 @@
 
     backgroundMusic.loop = true;
     backgroundMusic.volume = 0.30;
+    backgroundMusic.preload = 'auto';
+    backgroundMusic.setAttribute('playsinline', '');
     openSound.volume = 0.75;
     clickSound.volume = 0.35;
 
     var musicStarted = false;
+    var musicStarting = false;
 
-  
-function startBackgroundMusic() {
+    function startBackgroundMusic() {
+      if (musicStarted || musicStarting) {
+        return;
+      }
 
-  if (musicStarted === true) {
-    return;
-  }
+      musicStarting = true;
 
-  musicStarted = true;
+      try {
+        var playPromise = backgroundMusic.play();
 
-  backgroundMusic.currentTime = 0;
-
-  backgroundMusic.play().catch(function (error) {
-    musicStarted = false;
-    console.log('Không thể phát nhạc:', error);
-  });
-
-}
+        if (playPromise && typeof playPromise.then === 'function') {
+          playPromise.then(function () {
+            musicStarted = true;
+            musicStarting = false;
+          }).catch(function (error) {
+            musicStarted = false;
+            musicStarting = false;
+            console.log('Không thể phát nhạc:', error);
+          });
+        } else {
+          musicStarted = true;
+          musicStarting = false;
+        }
+      } catch (error) {
+        musicStarted = false;
+        musicStarting = false;
+        console.log('Lỗi phát nhạc:', error);
+      }
+    }
 
     function playOpenSound() {
       openSound.currentTime = 0;
@@ -474,25 +490,26 @@ function startBackgroundMusic() {
       }, 2450);
     }
 
+    // Phát nhạc trong thao tác chạm/kéo hợp lệ của người dùng.
+    envelopeSlider.addEventListener('touchstart', function () {
+      startBackgroundMusic();
+    }, { passive: true });
+
     envelopeSlider.addEventListener('pointerdown', function () {
       startBackgroundMusic();
     });
 
-    
-envelopeSlider.addEventListener('input', function () {
+    // Thanh kéo cập nhật độc lập, không chờ nhạc tải hoặc phát.
+    envelopeSlider.addEventListener('input', function () {
+      var value = Number(envelopeSlider.value);
 
-  var value = Number(envelopeSlider.value);
+      zipPull.style.left = value + '%';
+      zipProgress.style.width = value + '%';
 
-  zipPull.style.left = value + '%';
-  zipProgress.style.width = value + '%';
-
-  if (value >= 95) {
-    openEnvelope();
-  }
-
-  startBackgroundMusic();
-
-});
+      if (value >= 95) {
+        openEnvelope();
+      }
+    });
 
     envelopeSlider.addEventListener('change', function () {
       if (!envelopeOpened) {
