@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f3e3e8">
+  <title>Thiệp mời tốt nghiệp của Hồng Thu</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <main class="stage" id="stage" aria-label="Thiệp mời tốt nghiệp">
+
+    <div class="envelope-screen" id="envelopeScreen">
+      <div class="floating-decor decor-1">✦</div>
+      <div class="floating-decor decor-2">✧</div>
+      <div class="floating-decor decor-3">♡</div>
+      <div class="floating-decor decor-4">✦</div>
+
+      <div class="envelope-title">
+        <span class="eyebrow">YOU HAVE A SPECIAL INVITATION</span>
+        <h1>A little surprise<br>for you</h1>
+        <div class="title-divider">✦ ♡ ✦</div>
+      </div>
+
+      <div class="envelope-wrap" id="envelopeWrap">
+        <div class="envelope-back"></div>
+
+        <div class="envelope-letter">
+          <div class="letter-ornament">✧</div>
+          <p>You're invited</p>
+          <h2>Hồng Thu</h2>
+          <span>GRADUATION 2026</span>
+          <div class="letter-date">22 · 11 · 2026</div>
+        </div>
+
+        <div class="envelope-flap"></div>
+        <div class="envelope-front"></div>
+        <div class="ribbon ribbon-horizontal"></div>
+        <div class="ribbon ribbon-vertical"></div>
+
+        <div class="wax-seal">
+          <span>HT</span>
+        </div>
+
+        <div class="zip-line" id="zipLine">
+          <div class="zip-track"></div>
+          <div class="zip-progress" id="zipProgress"></div>
+          <div class="zip-pull" id="zipPull">
+            <span>❯</span>
+          </div>
+        </div>
+
+        <div class="zip-label">SLIDE TO OPEN</div>
+      </div>
+
+      <div class="open-instruction">
+        <span>✦</span>
+        Mời bạn kéo để mở
+        <span>✦</span>
+      </div>
+
+      <p class="envelope-subtitle">
+        Một lời mời đặc biệt đang chờ bạn
+      </p>
+
+      <div class="envelope-footer">
+        MADE WITH LOVE · HỒNG THU
+      </div>
+
+      <input
+        type="range"
+        id="envelopeSlider"
+        class="envelope-slider"
+        min="0"
+        max="100"
+        value="0"
+        aria-label="Kéo để mở phong bì"
+      >
+
+      <div class="confetti-container" id="confettiContainer"></div>
+    </div>
+
+    <!-- 9 TRANG CANVA GỐC -->
+    <img class="page active" src="images/1.jpg" alt="Trang 1">
+    <img class="page" src="images/2.jpg" alt="Trang 2" loading="lazy">
+    <img class="page" src="images/3.jpg" alt="Trang 3" loading="lazy">
+    <img class="page" src="images/4.jpg" alt="Trang 4" loading="lazy">
+    <img class="page" src="images/5.jpg" alt="Trang 5" loading="lazy">
+    <img class="page" src="images/6.jpg" alt="Trang 6" loading="lazy">
+    <img class="page" src="images/7.jpg" alt="Trang 7" loading="lazy">
+    <img class="page" src="images/8.jpg" alt="Trang 8" loading="lazy">
+    <img class="page" src="images/9.jpg" alt="Trang 9" loading="lazy">
+
+  </main>
+
+  <nav class="bar hidden" id="navigation" aria-label="Điều hướng trang thiệp">
+    <button class="nav" id="prev" type="button" aria-label="Trang trước">&#8592;</button>
+    <div class="dots" id="dots" role="tablist" aria-label="Chọn trang"></div>
+    <button class="nav" id="next" type="button" aria-label="Trang sau">&#8594;</button>
+  </nav>
+
+  <script>
+  (function () {
+    var pages = Array.prototype.slice.call(document.querySelectorAll('.page'));
+    var stage = document.getElementById('stage');
+    var dotsBox = document.getElementById('dots');
+    var prev = document.getElementById('prev');
+    var next = document.getElementById('next');
+    var navigation = document.getElementById('navigation');
+    var envelopeScreen = document.getElementById('envelopeScreen');
+    var envelopeSlider = document.getElementById('envelopeSlider');
+    var zipPull = document.getElementById('zipPull');
+    var zipProgress = document.getElementById('zipProgress');
+    var confettiContainer = document.getElementById('confettiContainer');
+
+    var cur = 0;
+    var envelopeOpened = false;
+    var isTurning = false;
+
+    var backgroundMusic = new Audio('sounds/background.mp4');
+    var openSound = new Audio('sounds/open.mp3');
+    var clickSound = new Audio('sounds/click.mp3');
+
+    backgroundMusic.loop = true;
+    backgroundMusic.volume = 0.30;
+    openSound.volume = 0.75;
+    clickSound.volume = 0.35;
+
+    var musicStarted = false;
+
+  function startBackgroundMusic() {
+    if (musicStarted === true) {
+        return;
+    }
+
+    musicStarted = true;
+
+    backgroundMusic.currentTime = 12;
+
+    backgroundMusic.play().catch(function () {
+        musicStarted = false;
+    });
+}
+
+    function playOpenSound() {
+      openSound.currentTime = 0;
+      openSound.play().catch(function () {});
+    }
+
+    function playClickSound() {
+      clickSound.currentTime = 0;
+      clickSound.play().catch(function () {});
+    }
+
+    var dots = pages.map(function (_, i) {
+      var d = document.createElement('button');
+      d.className = 'dot';
+      d.type = 'button';
+      d.setAttribute('role', 'tab');
+      d.setAttribute('aria-label', 'Trang ' + (i + 1));
+
+      d.addEventListener('click', function () {
+        if (envelopeOpened) go(i);
+      });
+
+      dotsBox.appendChild(d);
+      return d;
+    });
+
+    function updatePages() {
+      pages.forEach(function (p, i) {
+        p.classList.toggle('active', i === cur);
+        p.classList.toggle('flipped', i < cur);
+        p.classList.toggle('before', i < cur);
+        p.classList.remove('turn-next', 'turn-prev', 'dragging');
+
+        p.style.zIndex = pages.length - i;
+        p.style.transform = '';
+        p.style.transition = '';
+
+        p.setAttribute('aria-hidden', i === cur ? 'false' : 'true');
+      });
+
+      dots.forEach(function (d, i) {
+        d.classList.toggle('on', i === cur);
+        d.setAttribute('aria-selected', i === cur ? 'true' : 'false');
+      });
+
+      prev.disabled = cur === 0;
+      next.disabled = cur === pages.length - 1;
+    }
+
+    function go(n, playSound) {
+      if (!envelopeOpened || isTurning) return;
+      if (n < 0 || n >= pages.length || n === cur) return;
+
+      var oldPage = cur;
+      var turnPage;
+
+      isTurning = true;
+
+      if (playSound !== false) playClickSound();
+
+      if (n > oldPage) {
+        for (var i = oldPage + 1; i < n; i++) {
+          pages[i].classList.add('flipped');
+        }
+
+        turnPage = pages[oldPage];
+        turnPage.style.zIndex = pages.length + 10;
+        turnPage.classList.add('turn-next');
+      } else {
+        turnPage = pages[n];
+        turnPage.classList.remove('flipped');
+        turnPage.style.zIndex = pages.length + 10;
+        turnPage.classList.add('turn-prev');
+      }
+
+      setTimeout(function () {
+        cur = n;
+        updatePages();
+        isTurning = false;
+      }, 950);
+    }
+
+    prev.addEventListener('click', function () {
+      go(cur - 1);
+    });
+
+    next.addEventListener('click', function () {
+      go(cur + 1);
+    });
+
+    /* KÉO LẬT TRANG THEO CHUỘT */
+    var dragStartX = 0;
+    var dragCurrentX = 0;
+    var dragProgress = 0;
+    var dragWidth = 0;
+    var isDragging = false;
+    var dragMoved = false;
+    var suppressClick = false;
+    var activeDragPage = null;
+    var previousDragPage = null;
+
+    stage.addEventListener('pointerdown', function (e) {
+      if (e.pointerType !== 'mouse') return;
+      if (e.button !== 0 || !envelopeOpened || isTurning) return;
+      if (!e.target.classList.contains('page')) return;
+      if (!e.target.classList.contains('active')) return;
+
+      isDragging = true;
+      dragMoved = false;
+      dragStartX = e.clientX;
+      dragCurrentX = e.clientX;
+      dragProgress = 0;
+
+      dragWidth = e.target.getBoundingClientRect().width;
+      activeDragPage = e.target;
+      previousDragPage = pages[cur - 1] || null;
+
+      activeDragPage.classList.add('dragging');
+      activeDragPage.style.zIndex = pages.length + 10;
+      activeDragPage.style.transition = 'none';
+
+      if (previousDragPage) {
+        previousDragPage.style.zIndex = pages.length + 9;
+      }
+
+      stage.setPointerCapture(e.pointerId);
+    });
+
+    stage.addEventListener('pointermove', function (e) {
+      if (!isDragging || !activeDragPage) return;
+
+      dragCurrentX = e.clientX;
+
+      var distance = dragStartX - dragCurrentX;
+
+      if (Math.abs(distance) > 8) dragMoved = true;
+
+      dragProgress = Math.min(Math.abs(distance) / dragWidth, 1);
+
+      if (distance > 0) {
+        // Kéo sang trái: lật trang hiện tại
+        activeDragPage.style.transform =
+          'rotateY(' + (-180 * dragProgress) + 'deg)';
+      } else if (previousDragPage) {
+        // Kéo sang phải: mở lại trang trước
+        previousDragPage.style.transition = 'none';
+        previousDragPage.style.transform =
+          'rotateY(' + (-180 + 180 * dragProgress) + 'deg)';
+      }
+    });
+
+    function finishDrag(cancelled) {
+      if (!isDragging) return;
+
+      isDragging = false;
+
+      var distance = dragStartX - dragCurrentX;
+      var shouldTurn = !cancelled && dragProgress >= 0.25;
+
+      if (dragMoved) {
+        suppressClick = true;
+        setTimeout(function () {
+          suppressClick = false;
+        }, 500);
+      }
+
+      if (activeDragPage) {
+        activeDragPage.classList.remove('dragging');
+      }
+
+      if (shouldTurn && distance > 0 && cur < pages.length - 1) {
+        activeDragPage.style.transition = '';
+        activeDragPage.style.transform = '';
+        activeDragPage.style.zIndex = '';
+        activeDragPage = null;
+        previousDragPage = null;
+        dragProgress = 0;
+        dragMoved = false;
+        go(cur + 1);
+        return;
+      }
+
+      if (shouldTurn && distance < 0 && cur > 0) {
+        if (previousDragPage) {
+          previousDragPage.style.transition = '';
+          previousDragPage.style.transform = '';
+          previousDragPage.style.zIndex = '';
+        }
+
+        activeDragPage.style.transition = '';
+        activeDragPage.style.transform = '';
+        activeDragPage.style.zIndex = '';
+        activeDragPage = null;
+        previousDragPage = null;
+        dragProgress = 0;
+        dragMoved = false;
+        go(cur - 1);
+        return;
+      }
+
+      // Chưa kéo đủ: trả trang về vị trí ban đầu
+      if (activeDragPage) {
+        activeDragPage.style.transition = 'transform .45s ease';
+        activeDragPage.style.transform = '';
+        activeDragPage.style.zIndex = '';
+      }
+
+      if (previousDragPage) {
+        previousDragPage.style.transition = 'transform .45s ease';
+        previousDragPage.style.transform = 'rotateY(-180deg)';
+        previousDragPage.style.zIndex = '';
+
+        setTimeout(function () {
+          if (previousDragPage) previousDragPage.style.transition = '';
+        }, 500);
+      }
+
+      setTimeout(function () {
+        if (activeDragPage) {
+          activeDragPage.style.transition = '';
+          activeDragPage.style.zIndex = '';
+        }
+      }, 500);
+
+      activeDragPage = null;
+      previousDragPage = null;
+      dragProgress = 0;
+      dragMoved = false;
+    }
+
+    stage.addEventListener('pointerup', function () {
+      finishDrag(false);
+    });
+
+    stage.addEventListener('pointercancel', function () {
+      finishDrag(true);
+    });
+
+    pages.forEach(function (p) {
+      p.addEventListener('click', function (e) {
+        if (suppressClick) {
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
+
+        if (envelopeOpened && cur < pages.length - 1) {
+          go(cur + 1);
+        }
+      });
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (!envelopeOpened) return;
+
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        e.preventDefault();
+        go(cur + 1);
+      } else if (e.key === 'ArrowLeft') {
+        go(cur - 1);
+      }
+    });
+
+    /* VUỐT TRÊN ĐIỆN THOẠI */
+    var touchStartX = null;
+
+    stage.addEventListener('touchstart', function (e) {
+      if (!envelopeOpened) return;
+      touchStartX = e.touches[0].clientX;
+    }, { passive: true });
+
+    stage.addEventListener('touchend', function (e) {
+      if (!envelopeOpened || touchStartX === null) return;
+
+      var dx = e.changedTouches[0].clientX - touchStartX;
+
+      if (Math.abs(dx) > 50) {
+        if (dx < 0) go(cur + 1);
+        else go(cur - 1);
+      }
+
+      touchStartX = null;
+    }, { passive: true });
+
+    function createConfetti() {
+      var colors = ['#e7a6bd', '#d9ac67', '#ffffff', '#f4cfda', '#c8799b'];
+
+      for (var i = 0; i < 28; i++) {
+        var piece = document.createElement('span');
+        piece.className = 'confetti';
+        piece.style.left = Math.random() * 100 + '%';
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.animationDelay = Math.random() * .5 + 's';
+        piece.style.animationDuration = (1.5 + Math.random() * 1.3) + 's';
+        piece.style.setProperty('--drift', (Math.random() * 180 - 90) + 'px');
+        confettiContainer.appendChild(piece);
+      }
+    }
+
+    function openEnvelope() {
+      if (envelopeOpened) return;
+
+      envelopeOpened = true;
+      playOpenSound();
+
+      envelopeSlider.value = 100;
+      envelopeSlider.disabled = true;
+      zipPull.style.left = '100%';
+      zipProgress.style.width = '100%';
+
+      envelopeScreen.classList.add('opening');
+      createConfetti();
+
+      setTimeout(function () {
+        envelopeScreen.classList.add('opened');
+      }, 1450);
+
+      setTimeout(function () {
+        envelopeScreen.style.display = 'none';
+        navigation.classList.remove('hidden');
+        updatePages();
+      }, 2450);
+    }
+
+    envelopeSlider.addEventListener('pointerdown', function () {
+      startBackgroundMusic();
+    });
+
+    envelopeSlider.addEventListener('input', function () {
+      startBackgroundMusic();
+
+      var value = Number(envelopeSlider.value);
+      zipPull.style.left = value + '%';
+      zipProgress.style.width = value + '%';
+
+      if (value >= 95) openEnvelope();
+    });
+
+    envelopeSlider.addEventListener('change', function () {
+      if (!envelopeOpened) {
+        envelopeSlider.value = 0;
+        zipPull.style.left = '0%';
+        zipProgress.style.width = '0%';
+      }
+    });
+
+    /* KHỞI TẠO */
+    pages.forEach(function (p, i) {
+      p.style.zIndex = pages.length - i;
+      p.classList.toggle('active', i === 0);
+      p.classList.remove('flipped', 'before');
+      p.setAttribute('aria-hidden', i === 0 ? 'false' : 'true');
+    });
+
+    prev.disabled = true;
+
+    dots.forEach(function (d, i) {
+      d.classList.toggle('on', i === 0);
+    });
+  })();
+  </script>
+</body>
+</html>
