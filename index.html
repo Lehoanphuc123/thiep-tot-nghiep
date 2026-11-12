@@ -80,6 +80,20 @@
       cursor: default;
       opacity: .85;
     }
+  
+    /* Tăng tốc chuyển trang khi bấm nút mũi tên */
+    .page {
+      transition: opacity .12s ease, transform .18s ease !important;
+    }
+    .page.active {
+      animation-duration: .18s !important;
+    }
+    .page.turn-next,
+    .page.turn-prev {
+      transition-duration: .18s !important;
+      animation-duration: .18s !important;
+    }
+
   </style>
 </head>
 
@@ -308,7 +322,7 @@
         cur = n;
         updatePages();
         isTurning = false;
-      }, 950);
+      }, 220);
     }
 
     prev.addEventListener('click', function () {
