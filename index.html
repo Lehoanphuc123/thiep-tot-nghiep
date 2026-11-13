@@ -94,6 +94,53 @@
       animation-duration: .18s !important;
     }
 
+  
+    /* Nơ hồng ôm quanh huy hiệu HT */
+    .wax-seal { position:relative; z-index:33; width:116px; height:116px; border-radius:50%; background:radial-gradient(circle at 35% 28%,#f7b7d0 0%,#e78eb4 58%,#ce6795 100%); border:3px solid #f5c7d8; box-shadow:0 5px 16px rgba(111,54,76,.22),inset 0 0 0 3px rgba(255,255,255,.2); }
+    .wax-seal span { color:#fff5f8; text-shadow:0 2px 3px rgba(137,54,91,.25); font-family:'Great Vibes',cursive; font-size:48px; position:relative; z-index:2; }
+    .ht-bow { position:absolute; left:50%; top:50%; width:190px; height:104px; transform:translate(-50%,-50%); z-index:31; pointer-events:none; filter:drop-shadow(0 3px 3px rgba(125,55,82,.2)); opacity:1; transition:opacity .35s ease, transform .45s ease; }
+    .bow-loop { position:absolute; top:32px; width:56px; height:36px; background:linear-gradient(145deg,#ffe2ec,#e989b1 72%,#d66e9a); border:2px solid #ffd7e5; border-radius:80% 18% 75% 22%; }
+    .bow-loop-left { left:0; transform:rotate(18deg); }
+    .bow-loop-right { right:0; transform:scaleX(-1) rotate(18deg); }
+    .bow-knot { position:absolute; left:85px; top:41px; width:20px; height:19px; border-radius:7px; background:linear-gradient(135deg,#fff0f5,#d96f9c); border:2px solid #ffe0eb; z-index:2; }
+    .bow-tail { position:absolute; top:61px; width:23px; height:39px; background:linear-gradient(90deg,#f9c0d5,#df7da5); clip-path:polygon(0 0,100% 0,85% 100%,50% 78%,12% 100%); }
+    .bow-tail-left { left:68px; transform:rotate(15deg); } .bow-tail-right { right:68px; transform:rotate(-15deg); }
+
+    /* Ổ khóa nhỏ xinh */
+    .lock-open-button { position:absolute; left:50%; top:65%; transform:translate(-50%,-50%); z-index:45; width:82px; height:88px; min-width:0; min-height:0; padding:0; border:0; border-radius:0; background:transparent; box-shadow:none; display:flex; align-items:center; justify-content:center; cursor:pointer; -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
+    .lock-open-button:active { transform:translate(-50%,-50%) scale(.96); }
+    .lock-icon { position:relative; display:block; width:62px; height:70px; filter:drop-shadow(0 4px 5px rgba(154,72,112,.25)); transform-origin:50% 75%; }
+    /* Ổ khóa hình trái tim màu hồng pastel */
+    .lock-body {
+      position:absolute; left:5px; bottom:0; width:52px; height:49px;
+      background:linear-gradient(145deg,#fff0f6 0%,#ffb6d1 42%,#f27eaa 100%);
+      clip-path:polygon(50% 100%,7% 57%,1% 39%,5% 20%,19% 7%,35% 8%,50% 25%,65% 8%,81% 7%,95% 20%,99% 39%,93% 57%);
+      display:flex; align-items:center; justify-content:center; z-index:2;
+      filter:drop-shadow(0 2px 1px rgba(188,83,126,.15));
+    }
+    .lock-body:before {
+      content:""; position:absolute; inset:3px 4px 5px;
+      clip-path:polygon(50% 100%,7% 57%,1% 39%,5% 20%,19% 7%,35% 8%,50% 25%,65% 8%,81% 7%,95% 20%,99% 39%,93% 57%);
+      border:1px solid rgba(255,255,255,.65); pointer-events:none;
+    }
+    .lock-hole { width:9px; height:15px; border-radius:8px 8px 5px 5px; background:#a94d78; position:relative; z-index:2; margin-top:3px; box-shadow:0 1px 2px rgba(104,37,71,.2); }
+    .lock-hole:after { content:""; position:absolute; left:2px; bottom:-5px; width:5px; height:8px; background:#a94d78; border-radius:0 0 4px 4px; }
+    .lock-shackle { position:absolute; left:15px; top:1px; width:32px; height:38px; border:6px solid #fff0c9; border-bottom:0; border-radius:18px 18px 0 0; box-sizing:border-box; transform-origin:88% 88%; z-index:1; filter:drop-shadow(0 1px 1px rgba(169,91,119,.2)); }
+    .lock-sparkle { position:absolute; right:9px; top:18px; color:#fff; font-size:10px; z-index:3; text-shadow:0 1px 2px #e779a7; }
+    .key-icon { position:absolute; left:-32px; bottom:-23px; z-index:4; font-size:30px; opacity:0; transform:translate(-24px,28px) rotate(-45deg) scale(.65); pointer-events:none; }
+    .lock-open-button.key-animating .key-icon { animation:keyFlyIntoLock .78s cubic-bezier(.2,.75,.25,1) forwards; }
+    .lock-open-button.key-animating .lock-shackle { animation:shackleUnlock .65s ease .78s forwards; }
+    .lock-open-button.key-animating .lock-body { animation:lockBodyPop .55s ease 1.05s forwards; }
+    .lock-open-button.key-animating .lock-icon { animation:lockJiggle .35s ease .78s 1; }
+    .lock-open-button.unlocked .lock-shackle { transform:translate(7px,-10px) rotate(38deg); }
+    .lock-open-button.unlocked .lock-body { transform:rotate(9deg) translateY(3px); transition:transform .35s ease; }
+    .lock-open-button:disabled { cursor:default; }
+    .envelope-wrap.bow-released .ht-bow { opacity:0; transform:translate(-50%,-50%) scale(1.22) rotate(-12deg); }
+    @keyframes keyFlyIntoLock { 0%{opacity:0;transform:translate(-24px,28px) rotate(-45deg) scale(.65)} 16%{opacity:1} 70%{opacity:1;transform:translate(25px,-12px) rotate(0) scale(1)} 88%{opacity:1;transform:translate(29px,-9px) rotate(18deg) scale(.95)} 100%{opacity:0;transform:translate(34px,-5px) rotate(45deg) scale(.8)} }
+    @keyframes shackleUnlock { 0%{transform:rotate(0)} 45%{transform:translate(2px,-5px) rotate(-18deg)} 100%{transform:translate(7px,-10px) rotate(38deg)} }
+    @keyframes lockBodyPop { 0%{transform:scale(1)} 45%{transform:scale(1.12) rotate(-7deg)} 100%{transform:scale(1) rotate(7deg) translateY(3px)} }
+    @keyframes lockJiggle { 0%,100%{transform:rotate(0)} 25%{transform:rotate(-7deg)} 55%{transform:rotate(7deg)} }
+
   </style>
 </head>
 
@@ -107,7 +154,16 @@
       <div class="floating-decor decor-4">✦</div>
 
       <div class="envelope-title">
-        <span class="eyebrow">YOU HAVE A SPECIAL INVITATION</span>
+        <span class="eyebrow">BUỔI LỄ TỐT NGHIỆP CỬ NHÂN QTKD CỦA </span>
+         <span class="eyebrow2">
+           <span>H</span><span>U</span><span>Ỳ</span><span>N</span><span>H</span>
+           
+          <span>T</span><span>H</span><span>Ị</span>
+ 
+  <span>H</span><span>Ồ</span><span>N</span><span>G</span>
+ 
+  <span>T</span><span>H</span><span>U</span>
+</span>
         <h1>A little surprise<br>for you</h1>
         <div class="title-divider">✦ ♡ ✦</div>
       </div>
@@ -132,9 +188,13 @@
           <span>HT</span>
         </div>
 
-        <button class="lock-open-button" id="lockOpenButton" type="button" aria-label="Chạm để mở thiệp">
-          <span class="lock-icon" aria-hidden="true">🔒</span>
-          <span class="lock-text">CHẠM ĐỂ MỞ THIỆP</span>
+        <div class="ht-bow" aria-hidden="true">
+          <span class="bow-loop bow-loop-left"></span><span class="bow-loop bow-loop-right"></span>
+          <span class="bow-knot"></span><span class="bow-tail bow-tail-left"></span><span class="bow-tail bow-tail-right"></span>
+        </div>
+        <button class="lock-open-button" id="lockOpenButton" type="button" aria-label="Chạm vào ổ khóa để mở thiệp">
+          <span class="lock-icon" id="lockIcon" aria-hidden="true"><span class="lock-shackle"></span><span class="lock-body"><span class="lock-hole"></span><span class="lock-sparkle">✦</span></span></span>
+          <span class="key-icon" id="keyIcon" aria-hidden="true">🗝️</span>
         </button>
 
 
@@ -142,7 +202,7 @@
 
       <div class="open-instruction">
         <span>✦</span>
-        Mời bạn kéo để mở
+        Anh em ơi, chạm vào ổ khóa để mở thiệp nhé!
         <span>✦</span>
       </div>
 
@@ -159,7 +219,7 @@
       <div class="confetti-container" id="confettiContainer"></div>
     </div>
 
-    <!-- 9 TRANG CANVA GỐC -->
+    <!-- 12 ẢNH MỚI -->
     <img class="page active" src="images/1.jpg" alt="Trang 1">
     <img class="page" src="images/2.jpg" alt="Trang 2" loading="lazy">
     <img class="page" src="images/3.jpg" alt="Trang 3" loading="lazy">
@@ -169,6 +229,9 @@
     <img class="page" src="images/7.jpg" alt="Trang 7" loading="lazy">
     <img class="page" src="images/8.jpg" alt="Trang 8" loading="lazy">
     <img class="page" src="images/9.jpg" alt="Trang 9" loading="lazy">
+    <img class="page" src="images/10.jpg" alt="Trang 10" loading="lazy">
+    <img class="page" src="images/11.jpg" alt="Trang 11" loading="lazy">
+    <img class="page" src="images/12.jpg" alt="Trang 12" loading="lazy">
 
   </main>
 
@@ -564,11 +627,19 @@
 
     // Chạm vào ổ khóa để mở thiệp. Đây cũng là thao tác kích hoạt nhạc.
     lockOpenButton.addEventListener('click', function () {
-      if (envelopeOpened) return;
+      if (envelopeOpened || lockOpenButton.disabled) return;
       startBackgroundMusic();
-      lockOpenButton.classList.add('unlocked');
       lockOpenButton.disabled = true;
-      openEnvelope();
+      lockOpenButton.classList.add('key-animating');
+
+      setTimeout(function () {
+        lockOpenButton.classList.add('unlocked');
+        envelopeWrap.classList.add('bow-released');
+      }, 760);
+
+      setTimeout(function () {
+        openEnvelope();
+      }, 1450);
     });
 
     /* KHỞI TẠO */
