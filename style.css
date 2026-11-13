@@ -377,10 +377,46 @@ body {
   margin-bottom: 35px;
 }
 
-.eyebrow {
-  font-size: 9px;
-  letter-spacing: .26em;
-  color: #a45c7b;
+.eyebrow2 {
+  display: inline-block;
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  color: #c45b87;
+  text-shadow: 1px 2px 3px rgba(150, 55, 95, .3);
+}
+
+.eyebrow2 span {
+  display: inline-block;
+  animation: bounceLetter 1.2s ease-in-out infinite;
+}
+
+.eyebrow2 span:nth-child(1) { animation-delay: 0s; }
+.eyebrow2 span:nth-child(2) { animation-delay: .08s; }
+.eyebrow2 span:nth-child(3) { animation-delay: .16s; }
+.eyebrow2 span:nth-child(4) { animation-delay: .24s; }
+.eyebrow2 span:nth-child(5) { animation-delay: .32s; }
+.eyebrow2 span:nth-child(6) { animation-delay: .4s; }
+.eyebrow2 span:nth-child(7) { animation-delay: .48s; }
+.eyebrow2 span:nth-child(8) { animation-delay: .56s; }
+.eyebrow2 span:nth-child(9) { animation-delay: .64s; }
+.eyebrow2 span:nth-child(10) { animation-delay: .72s; }
+.eyebrow2 span:nth-child(11) { animation-delay: .8s; }
+.eyebrow2 span:nth-child(12) { animation-delay: .88s; }
+.eyebrow2 span:nth-child(13) { animation-delay: .96s; }
+.eyebrow2 span:nth-child(14) { animation-delay: 1.04s; }
+.eyebrow2 span:nth-child(15) { animation-delay: 1.12s; }
+.eyebrow2 span:nth-child(16) { animation-delay: 1.2s; }
+.eyebrow2 span:nth-child(17) { animation-delay: 1.28s; }
+.eyebrow2 span:nth-child(18) { animation-delay: 1.36s; }
+
+@keyframes bounceLetter {
+  0%, 50%, 100% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-8px);
+  }
 }
 
 .envelope-title h1 {
@@ -1301,4 +1337,19 @@ body {
     .page.turn-prev {
         animation-duration: .75s;
     }
+}
+/* Ẩn toàn bộ trang thiệp khi phong bì chưa mở */
+.stage:has(.envelope-screen:not(.opened)) .page {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+/* Khi phong bì mở xong thì hiện trang thiệp */
+.stage:has(.envelope-screen.opened) .page {
+    visibility: visible !important;
+}
+
+.stage:has(.envelope-screen.opened) .page.active {
+    opacity: 1 !important;
 }
